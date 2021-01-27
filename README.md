@@ -1,2 +1,2 @@
 # mwsemods
-Morrowind mods
+Morrowind Mods
