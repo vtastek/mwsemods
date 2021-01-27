@@ -17,12 +17,12 @@ local FatigInf = 1 -- Fatigue influence todo
 -- get the ray start pos, from above and slightly front downwards
 local function frontDownCast()
 
-    local eyeVec = tes3.getCameraVector()
-    local eyePos = tes3.getCameraPosition()
+	local eyeVec = tes3.getCameraVector()
+	local eyePos = tes3.getCameraPosition()
 
 	-- renormalize eyevec with fixed magnitude for zero z
 	-- to avoid making a spherical reach
-    local vm = math.sqrt(eyeVec.x * eyeVec.x + eyeVec.y * eyeVec.y)
+	local vm = math.sqrt(eyeVec.x * eyeVec.x + eyeVec.y * eyeVec.y)
 
 	if (vm > 0) then
 		vm = vm
@@ -30,11 +30,11 @@ local function frontDownCast()
 		vm = 1
 	end
 
-    return {
-        eyePos.x + ( eyeVec.x / vm * 75 ),
-        eyePos.y + ( eyeVec.y /vm * 75 ),
-        eyePos.z + ( 200 ),
-    }
+	return {
+		eyePos.x + ( eyeVec.x / vm * 75 ),
+		eyePos.y + ( eyeVec.y /vm * 75 ),
+		eyePos.z + ( 200 ),
+	}
 end
 
 
@@ -44,13 +44,13 @@ local function climbPlayer()
 		return
 	end
 
-    local player = tes3.getPlayerRef()
+	local player = tes3.getPlayerRef()
 
 	-- if added directly, it will fight gravity badly
 	jumpPosition = jumpPosition + climbHeight / 60 * cSpeed  * FatigInf
 
 	-- equalizing instead gets consistent results
-    player.position.z = jumpPosition
+	player.position.z = jumpPosition
 
 	-- tiny amount of velocity cancellation
 	-- not zero, zero disables gravity impact
@@ -65,16 +65,16 @@ end
 
 
 local function playMoan()
-    tes3.playSound{sound="corpDRAG", volume=0.4, pitch=0.8}
+	tes3.playSound{sound="corpDRAG", volume=0.4, pitch=0.8}
 end
 
 local function playMoan2()
-    tes3.playSound{sound="corpDRAG", volume=0.1, pitch=1.3}
+	tes3.playSound{sound="corpDRAG", volume=0.1, pitch=1.3}
 end
 
 -- because timer takes functions only ?
 local function jumpingNot()
-    jumping = 0
+	jumping = 0
 end
 
 local function onClimbE(e)
@@ -84,9 +84,9 @@ local function onClimbE(e)
 		return
 	end
 
-    if tes3.menuMode() then
-        return
-    end
+	if tes3.menuMode() then
+		return
+	end
 
 	local mobile = tes3.getMobilePlayer()
 
@@ -113,8 +113,8 @@ local function onClimbE(e)
 
 	-- if player is down
 	if (statedown == nil or statedown == 1) then
-        return
-    end
+		return
+	end
 
 	-- if player is encumbered
 	local encumb = tes3.getMobilePlayer().encumbrance
@@ -124,8 +124,8 @@ local function onClimbE(e)
 	end
 
 	if (e.pressed == false) then
-        return
-    end
+		return
+	end
 
 	-- let's start! finally...
 
@@ -149,11 +149,11 @@ local function onClimbE(e)
 	local uResult = tes3.rayTest{
 		position = tes3.getCameraPosition(),
 		direction = {0, 0, 1},
-    }
+	}
 
 
 	if (uResult == nil) then
-        -- mwse.log("uResult is nil")
+		-- mwse.log("uResult is nil")
 		uResultz = tes3.getCameraPosition().z + 1000
 		else
 		uResultz = uResult.intersection.z
@@ -162,13 +162,13 @@ local function onClimbE(e)
 	local player = tes3.getPlayerRef()
 
 	-- instead of (camerapos - footpos)
-    local pHeight = mobile.height
+	local pHeight = mobile.height
 
 	-- down raycast
-    local result = tes3.rayTest{
-        position = frontDownCast(),
-        direction = {0, 0, -1},
-    }
+	local result = tes3.rayTest{
+		position = frontDownCast(),
+		direction = {0, 0, -1},
+	}
 
 	--local reference = mwscript.placeAtPC{object="misc_dwrv_ark_cube00"}
 
@@ -176,9 +176,9 @@ local function onClimbE(e)
 	--mwse.log("%f,%f,%f", tes3.getCameraVector().x, tes3.getCameraVector().y, tes3.getCameraVector().z )
 	--mwse.log("a %f,%f,%f", reference.position.x, reference.position.y, reference.position.z)
 
-    if (result == nil) then
-        return
-    end
+	if (result == nil) then
+		return
+	end
 
 	-- if there is enough room for PC height go on
 	if ( (uResultz - result.intersection.z) < pHeight) then
@@ -190,21 +190,21 @@ local function onClimbE(e)
 	end
 
 
-    -- if below waist obstacle, do not attempt climbing
-    if (result.intersection.z < (tes3.getCameraPosition().z - (pHeight * 0.5))) then
-        return
-    end
+	-- if below waist obstacle, do not attempt climbing
+	if (result.intersection.z < (tes3.getCameraPosition().z - (pHeight * 0.5))) then
+		return
+	end
 
 	-- how much to move upwards
 	-- bias for player bounding box
-    climbHeight = (result.intersection.z  - player.position.z) * acroInf + 70
+	climbHeight = (result.intersection.z  - player.position.z) * acroInf + 70
 
 	-- print(pHeight)
 
 	-- store jump distance for sound fx and fatigue regulation
 	-- local jumpPositionC
 
-    if(player.position.z < result.intersection.z) then
+	if(player.position.z < result.intersection.z) then
 		jumpPosition = player.position.z
 		--jumpPositionHold = player.position.z
 		--jumpPositionC = jumpPosition
@@ -233,7 +233,7 @@ local function onClimbE(e)
 		timer.start(0.1, playMoan)
 		timer.start(0.7, playMoan2)
 		timer.start(0.9, jumpingNot)
-    end
+	end
 end
 
 -- hotkey = E
@@ -242,4 +242,3 @@ event.register("key", onClimbE, {filter = 18})
 
 
 -- MCM
-
