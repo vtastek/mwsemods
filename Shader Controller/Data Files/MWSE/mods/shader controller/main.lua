@@ -12,8 +12,8 @@ local function GetShaders()
     local i = 0
     local parse = false
     local s = 0
-    if file then
-        for line in file:lines() do
+    if file then 
+        for line in file:lines() do 
             i = i + 1
             if line == '[Shader Chain]' then
                 parse = true
@@ -55,6 +55,11 @@ function this.init()
     this.id_cancel = tes3ui.registerID("example:MenuTextInput_Cancel")
     this.id_ListBlock = tes3ui.registerID("example:Shaders_Block")
     this.id_slabels = tes3ui.registerID("example:Shader_Labels")
+    event.register("keyDown", this.selUp, {filter=tes3.scanCode.keyUp})
+    event.register("keyDown", this.selDown, {filter=tes3.scanCode.keyDown})
+    event.register("keyDown", this.selLeft, {filter=tes3.scanCode.keyLeft})
+    event.register("keyDown", this.selRight, {filter=tes3.scanCode.keyRight})
+
     openmenu = false
 end
 
@@ -110,10 +115,7 @@ function this.createWindow()
 
     -- Events
     button_cancel:register("mouseClick", this.onCancel)
-    event.register("keyDown", this.selUp, {filter=tes3.scanCode.keyUp})
-    event.register("keyDown", this.selDown, {filter=tes3.scanCode.keyDown})
-    event.register("keyDown", this.selLeft, {filter=tes3.scanCode.keyLeft})
-    event.register("keyDown", this.selRight, {filter=tes3.scanCode.keyRight})
+
 
     -- Final setup
     menu:updateLayout()
@@ -124,7 +126,7 @@ end
 function this.selUp()
     local lmenu = tes3ui.findMenu(this.id_menu)
     local selection = lmenu:getPropertyInt("sel")
-    local shaderstotal = lmenu:getPropertyInt("st")
+    local shaderstotal = lmenu:getPropertyInt("st") - 1
     selection = selection - 1
     if selection == 0 then selection = shaderstotal end
     lmenu:setPropertyInt("sel", selection)
@@ -150,7 +152,7 @@ end
 function this.selDown()
     local lmenu = tes3ui.findMenu(this.id_menu)
     local selection = lmenu:getPropertyInt("sel")
-    local shaderstotal = lmenu:getPropertyInt("st")
+    local shaderstotal = lmenu:getPropertyInt("st") - 1
     selection = selection + 1
     if selection > shaderstotal then selection = 1 end
     lmenu:setPropertyInt("sel", selection)
