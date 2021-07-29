@@ -12,8 +12,8 @@ local function GetShaders()
     local i = 0
     local parse = false
     local s = 0
-    if file then 
-        for line in file:lines() do 
+    if file then
+        for line in file:lines() do
             i = i + 1
             if line == '[Shader Chain]' then
                 parse = true
@@ -26,8 +26,6 @@ local function GetShaders()
             if parse and line ~= '[Shader Chain]' then
                 if line ~= '' or line ~= nil then
                     shaders[s] = {name=line, state=1}
-                    --mwse.log(s)
-                    --mwse.log(shaders[s])
                     s = s + 1
                 end
             end
@@ -37,8 +35,6 @@ local function GetShaders()
     else
         error('file not found')
     end
-    --local scount = tablelength(shaders)
-    ----mwse.log("scount: %s ", scount)
 end
 
 GetShaders()
@@ -59,7 +55,6 @@ function this.init()
     event.register("keyDown", this.selDown, {filter=tes3.scanCode.keyDown})
     event.register("keyDown", this.selLeft, {filter=tes3.scanCode.keyLeft})
     event.register("keyDown", this.selRight, {filter=tes3.scanCode.keyRight})
-
     openmenu = false
 end
 
@@ -116,11 +111,8 @@ function this.createWindow()
     -- Events
     button_cancel:register("mouseClick", this.onCancel)
 
-
     -- Final setup
     menu:updateLayout()
-    --tes3ui.enterMenuMode(this.id_menu)
-
 end
 
 function this.selUp()
@@ -128,9 +120,10 @@ function this.selUp()
     local selection = lmenu:getPropertyInt("sel")
     local shaderstotal = lmenu:getPropertyInt("st") - 1
     selection = selection - 1
+
     if selection == 0 then selection = shaderstotal end
+
     lmenu:setPropertyInt("sel", selection)
-    --mwse.log(selection)
 
     local shBlock = lmenu:findChild(this.id_ListBlock)
     local children = shBlock.children
@@ -154,9 +147,11 @@ function this.selDown()
     local selection = lmenu:getPropertyInt("sel")
     local shaderstotal = lmenu:getPropertyInt("st") - 1
     selection = selection + 1
+
     if selection > shaderstotal then selection = 1 end
+
     lmenu:setPropertyInt("sel", selection)
-    --mwse.log(selection)
+
     local shBlock = lmenu:findChild(this.id_ListBlock)
     local children = shBlock.children
 
@@ -198,8 +193,7 @@ end
 function this.selRight()
     local lmenu = tes3ui.findMenu(this.id_menu)
     local selection = lmenu:getPropertyInt("sel")
-    --mwse.log("on")
-    --mwse.log(shaders[selection])
+
     mge.enableShader({shader = shaders[selection].name})
     shaders[selection].state = 1
 
@@ -235,7 +229,6 @@ function this.onCommand()
     if openmenu ~= true then
         this.createWindow()
         openmenu = true
-        mwse.log("menu open")
     elseif openmenu then
         this.onCancel()
         openmenu = false
@@ -244,7 +237,5 @@ end
 
 
 event.register("initialized", GetShaders)
-
 event.register("initialized", this.init)
 event.register("keyDown", this.onCommand, {filter=tes3.scanCode.v})
-
