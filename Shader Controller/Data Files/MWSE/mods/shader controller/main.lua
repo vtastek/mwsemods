@@ -66,6 +66,10 @@ function this.createWindow()
         return
     end
 
+    if tes3.menuMode() then
+        return
+    end
+
     -- Create window and frame
     menu = tes3ui.createMenu{ id = this.id_menu, fixedFrame = true }
     -- To avoid low contrast, text input windows should not use menu transparency settings
